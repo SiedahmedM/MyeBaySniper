@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Clock, Loader2 } from 'lucide-react'
 import { motion } from 'framer-motion'
@@ -16,10 +16,20 @@ export default function Dashboard() {
   const [itemTitle, setItemTitle] = useState('')
   const [currentBid, setCurrentBid] = useState<number | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [currentTime, setCurrentTime] = useState(Date.now())
   
   const { snipes, addSnipe, removeSnipe, getActiveSnipes } = useSnipeStore()
   const activeSnipes = getActiveSnipes()
   const wonSnipes = snipes.filter(s => s.status === 'won')
+
+  // Update timer every second
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(Date.now())
+    }, 1000)
+    
+    return () => clearInterval(timer)
+  }, [])
 
   const handleCreateSnipe = async () => {
     if (ebayUrl && maxBid) {
@@ -49,10 +59,28 @@ export default function Dashboard() {
   }
 
   const formatTimeLeft = (endTime: string) => {
-    const diff = new Date(endTime).getTime() - Date.now()
-    const hours = Math.floor(diff / (1000 * 60 * 60))
+    const endDate = new Date(endTime)
+    const now = new Date()
+    const diff = endDate.getTime() - now.getTime()
+    
+    if (diff <= 0) {
+      return "Ended"
+    }
+    
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
-    return `${hours}h ${minutes}m`
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000)
+    
+    if (days > 0) {
+      return `${days}d ${hours}h ${minutes}m`
+    } else if (hours > 0) {
+      return `${hours}h ${minutes}m`
+    } else if (minutes > 0) {
+      return `${minutes}m ${seconds}s`
+    } else {
+      return `${seconds}s`
+    }
   }
 
   // Fetch auction data when URL is entered
@@ -263,44 +291,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Example Items */}
-        <div className="mt-8">
-          <h2 className="text-2xl font-bold mb-4">Popular Items to Snipe</h2>
-          <div className="grid gap-4">
-            <div className="glass-card p-4 flex items-center justify-between">
-              <div>
-                <h3 className="font-semibold">iPhone 15 Pro Max 256GB</h3>
-                <p className="text-sm text-gray-400">Ends in 2h 34m • Current bid: $899</p>
-              </div>
-              <button 
-                onClick={() => {
-                  const url = 'https://www.ebay.com/itm/388436940224'
-                  handleUrlChange(url)
-                  setMaxBid('1299')
-                }}
-                className="px-4 py-2 rounded-full border border-neon-pink/50 hover:bg-neon-pink/20 transition-colors"
-              >
-                Quick Snipe
-              </button>
-            </div>
-            <div className="glass-card p-4 flex items-center justify-between">
-              <div>
-                <h3 className="font-semibold">PS5 Console Bundle</h3>
-                <p className="text-sm text-gray-400">Ends in 45m • Current bid: $425</p>
-              </div>
-              <button 
-                onClick={() => {
-                  setEbayUrl('https://www.ebay.com/itm/ps5-console-bundle')
-                  setItemTitle('PlayStation 5 Console Bundle with Extra Controller')
-                  setMaxBid('500')
-                }}
-                className="px-4 py-2 rounded-full border border-neon-pink/50 hover:bg-neon-pink/20 transition-colors"
-              >
-                Quick Snipe
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Modal */}

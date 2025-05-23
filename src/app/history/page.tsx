@@ -6,54 +6,7 @@ import { Clock, Trophy, XCircle, AlertCircle, Filter, Calendar } from 'lucide-re
 import SimpleNav from '@/components/Layout/SimpleNav'
 import { useSnipeStore } from '@/store/useSnipeStore'
 
-// Mock data for demonstration - remove this when you have real data
-const mockHistoricalSnipes = [
-  {
-    id: '1',
-    title: 'MacBook Pro 16" M3 Max - 64GB RAM',
-    finalPrice: 2899,
-    yourBid: 3000,
-    endTime: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-    status: 'won',
-    seller: 'techdeals2024',
-  },
-  {
-    id: '2',
-    title: 'Sony WH-1000XM5 Wireless Headphones',
-    finalPrice: 289,
-    yourBid: 250,
-    endTime: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-    status: 'outbid',
-    seller: 'audiostore',
-  },
-  {
-    id: '3',
-    title: 'Nintendo Switch OLED - White',
-    finalPrice: 0,
-    yourBid: 320,
-    endTime: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
-    status: 'pending',
-    seller: 'gamingworld',
-  },
-  {
-    id: '4',
-    title: 'Air Jordan 1 Retro High OG',
-    finalPrice: 185,
-    yourBid: 180,
-    endTime: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-    status: 'outbid',
-    seller: 'sneakerhead92',
-  },
-  {
-    id: '5',
-    title: 'iPad Pro 12.9" M2 - 256GB',
-    finalPrice: 899,
-    yourBid: 950,
-    endTime: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-    status: 'won',
-    seller: 'applereseller',
-  },
-]
+// Real snipes only - no mock data
 
 type FilterType = 'all' | 'won' | 'pending' | 'outbid'
 
@@ -63,16 +16,13 @@ export default function HistoryPage() {
   
   const { snipes: storeSnipes } = useSnipeStore()
   
-  // Combine store snipes with mock data for now
-  const allSnipes = [
-    ...storeSnipes.map(snipe => ({
-      ...snipe,
-      yourBid: snipe.maxBid,
-      finalPrice: snipe.finalPrice || 0,
-      seller: snipe.seller || 'Unknown'
-    })),
-    ...mockHistoricalSnipes
-  ]
+  // Use only real snipes from store
+  const allSnipes = storeSnipes.map(snipe => ({
+    ...snipe,
+    yourBid: snipe.maxBid,
+    finalPrice: snipe.finalPrice || 0,
+    seller: snipe.seller || 'Unknown'
+  }))
 
   const filteredSnipes = allSnipes.filter(snipe => 
     filter === 'all' || snipe.status === filter
