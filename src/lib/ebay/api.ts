@@ -49,7 +49,12 @@ export class EbayAPI {
 
   // Get item details using Browse API
   async getItem(itemId: string): Promise<EbayItem> {
-    const token = await this.auth.getClientToken()
+    // Check for manual token first
+    const manualToken = typeof window !== 'undefined' 
+      ? localStorage.getItem('ebay_oauth_token') 
+      : null
+    
+    const token = manualToken || await this.auth.getClientToken()
     
     const response = await fetch(
       `${ebayConfig.apiUrl}/buy/browse/v1/item/v1|${itemId}|0`,
@@ -98,7 +103,12 @@ export class EbayAPI {
 
   // Place a bid (requires user authentication)
   async placeBid(itemId: string, bidAmount: number): Promise<any> {
-    const token = await this.auth.getAccessToken()
+    // Check for manual token first
+    const manualToken = typeof window !== 'undefined' 
+      ? localStorage.getItem('ebay_oauth_token') 
+      : null
+    
+    const token = manualToken || await this.auth.getAccessToken()
     
     const response = await fetch(
       `${ebayConfig.apiUrl}/buy/offer/v1_beta/bidding/place_proxy_bid`,

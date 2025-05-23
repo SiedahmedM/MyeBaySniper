@@ -5,12 +5,14 @@ import { motion } from 'framer-motion'
 import { Link2, CheckCircle, AlertCircle, Clock, Bell, ExternalLink } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import toast from 'react-hot-toast'
+import TokenInput from './TokenInput'
 
 export default function SettingsContent() {
   const searchParams = useSearchParams()
   const [isConnected, setIsConnected] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [showDeveloperInfo, setShowDeveloperInfo] = useState(false)
+  const [showManualToken, setShowManualToken] = useState(false)
 
   useEffect(() => {
     // Check URL params for auth status
@@ -139,6 +141,25 @@ export default function SettingsContent() {
               🧪 SANDBOX MODE: Testing environment - no real money involved.
             </p>
           </div>
+        )}
+        
+        {/* Manual Token Option */}
+        {!isConnected && (
+          <div className="mt-4">
+            <button
+              onClick={() => setShowManualToken(!showManualToken)}
+              className="text-sm text-neon-purple hover:text-neon-pink transition-colors"
+            >
+              {showManualToken ? 'Hide' : 'Use'} manual token instead →
+            </button>
+          </div>
+        )}
+        
+        {showManualToken && !isConnected && (
+          <TokenInput onTokenSave={(token) => {
+            setIsConnected(true)
+            setShowManualToken(false)
+          }} />
         )}
       </motion.div>
 
