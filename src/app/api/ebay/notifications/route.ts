@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import crypto from 'crypto'
+import * as crypto from 'crypto'
 
 // This endpoint handles eBay marketplace account deletion notifications
 // Required for production API access compliance
@@ -49,6 +49,38 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if this is a challenge verification (form data)
+    const contentType = request.headers.get('content-type') || ''
+    
+    if (contentType.includes('application/x-www-form-urlencoded')) {
+      // Handle form data for challenge
+      const formData = await request.text()
+      const params = new URLSearchParams(formData)
+      const challengeCode = params.get('challenge_code')
+      
+      if (challengeCode) {
+        // Handle challenge in POST request
+        const verificationToken = process.env.EBAY_NOTIFICATION_TOKEN || 'myebaysniper-prod-2025-verification'
+        const endpointURL = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://mye-bay-sniper.vercel.app'}/api/ebay/notifications`
+        
+        console.log('eBay POST Challenge Request:', {
+          challengeCode,
+          verificationToken: verificationToken.substring(0, 10) + '...',
+          endpointURL
+        })
+        
+        const hash = crypto
+          .createHash('sha256')
+          .update(challengeCode + verificationToken + endpointURL)
+          .digest('hex')
+        
+        return NextResponse.json({
+          challengeResponse: hash
+        }, { status: 200 })
+      }
+    }
+    
+    // Handle regular JSON notifications
     const body = await request.json()
     
     // Log the notification for debugging
