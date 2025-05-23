@@ -5,6 +5,7 @@ export const ebayConfig = {
   clientId: process.env.EBAY_CLIENT_ID!,
   clientSecret: process.env.EBAY_CLIENT_SECRET!,
   redirectUri: process.env.EBAY_REDIRECT_URI!,
+  ruName: 'Mohamed_Siedahm-MohamedS-pro-SB-qezdx',
   environment: process.env.NEXT_PUBLIC_EBAY_ENVIRONMENT || 'sandbox',
   
   // API endpoints
@@ -26,7 +27,7 @@ export const ebayConfig = {
 export const getAuthUrl = (state: string) => {
   const params = new URLSearchParams({
     client_id: ebayConfig.clientId,
-    redirect_uri: ebayConfig.redirectUri,
+    redirect_uri: ebayConfig.ruName,
     response_type: 'code',
     state,
     scope: ebayConfig.scopes.join(' '),
