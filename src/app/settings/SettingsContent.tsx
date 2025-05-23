@@ -29,9 +29,8 @@ export default function SettingsContent() {
     // For production, you'll need the production RuName from eBay
     const sessionId = btoa(Date.now().toString()).replace(/=/g, '')
     
-    // IMPORTANT: Replace with your production RuName from eBay Developer Dashboard
-    // Get it from: https://developer.ebay.com/my/auth/?env=production&index=0
-    const runame = 'YOUR_PRODUCTION_RUNAME' // Example format: YourName-AppName-PRD-1234abcd-5678efgh
+    // Production RuName from eBay Developer Dashboard
+    const runame = 'Mohamed_Siedahm-MohamedS-pro-PR-anbaqhv'
     
     // Use the production eBay Sign-In flow
     const oauthUrl = `https://signin.ebay.com/ws/eBayISAPI.dll?SignIn&runame=${runame}&SessID=${sessionId}`
