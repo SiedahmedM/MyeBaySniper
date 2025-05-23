@@ -17,14 +17,12 @@ export const ebayConfig = {
   authUrl: process.env.NEXT_PUBLIC_EBAY_AUTH_URL!,
   tokenUrl: process.env.EBAY_TOKEN_URL!,
   
-  // OAuth scopes needed for sniping
+  // OAuth scopes - start with basic scope only
+  // Additional scopes require eBay approval
   scopes: [
-    'https://api.ebay.com/oauth/api_scope',
-    'https://api.ebay.com/oauth/api_scope/buy.item.feed',
-    'https://api.ebay.com/oauth/api_scope/buy.browse',
-    'https://api.ebay.com/oauth/api_scope/buy.offer',
-    'https://api.ebay.com/oauth/api_scope/buy.order',
-    'https://api.ebay.com/oauth/api_scope/buy.guest.checkout'
+    'https://api.ebay.com/oauth/api_scope' // Basic public data access
+    // 'https://api.ebay.com/oauth/api_scope/buy.browse' // Requires approval
+    // 'https://api.ebay.com/oauth/api_scope/buy.offer' // Requires approval for bidding
   ]
 }
 

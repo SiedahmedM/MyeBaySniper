@@ -21,19 +21,36 @@ export default function SettingsContent() {
       setIsConnected(true)
       toast.success('Successfully connected to eBay!')
     } else if (error) {
-      toast.error(`Authentication failed: ${error}`)
+      if (error === 'invalid_scope') {
+        toast.error('eBay OAuth requires scope approval. Using demo mode.')
+      } else {
+        toast.error(`Authentication failed: ${error}`)
+      }
+    }
+    
+    // Check if previously connected
+    if (localStorage.getItem('ebay_connected') === 'true') {
+      setIsConnected(true)
     }
   }, [searchParams])
 
   const handleConnectEbay = () => {
-    toast('Redirecting to eBay...', { icon: '🔐' })
+    // For now, simulate connection due to eBay OAuth scope restrictions
+    toast('Connecting to eBay...', { icon: '🔐' })
     
-    // Redirect to eBay OAuth
-    window.location.href = '/api/auth/ebay'
+    setTimeout(() => {
+      setIsConnected(true)
+      localStorage.setItem('ebay_connected', 'true')
+      toast.success('Connected to eBay! (Demo Mode)')
+      toast('💡 Note: To place real bids, OAuth scopes need eBay approval', { 
+        duration: 8000 
+      })
+    }, 1500)
   }
 
   const handleDisconnect = () => {
     setIsConnected(false)
+    localStorage.removeItem('ebay_connected')
     toast.success('Disconnected from eBay')
   }
 
