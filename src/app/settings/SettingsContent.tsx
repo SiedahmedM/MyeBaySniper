@@ -26,24 +26,27 @@ export default function SettingsContent() {
   }, [searchParams])
 
   const handleConnectEbay = () => {
-    // Generate a session ID for this OAuth request
+    // For production, you'll need the production RuName from eBay
     const sessionId = btoa(Date.now().toString()).replace(/=/g, '')
-    const runame = 'Mohamed_Siedahm-MohamedS-pro-SB-qezdx'
     
-    // Use the eBay Sign-In flow with RuName
-    const oauthUrl = `https://signin.sandbox.ebay.com/ws/eBayISAPI.dll?SignIn&runame=${runame}&SessID=${sessionId}`
+    // IMPORTANT: Replace with your production RuName from eBay Developer Dashboard
+    // Get it from: https://developer.ebay.com/my/auth/?env=production&index=0
+    const runame = 'YOUR_PRODUCTION_RUNAME' // Example format: YourName-AppName-PRD-1234abcd-5678efgh
+    
+    // Use the production eBay Sign-In flow
+    const oauthUrl = `https://signin.ebay.com/ws/eBayISAPI.dll?SignIn&runame=${runame}&SessID=${sessionId}`
     
     window.open(oauthUrl, '_blank', 'width=600,height=700')
     
     toast('Complete the login in the popup window', { icon: '🔐' })
     
-    // Show instructions
+    // Show warning for production
     setTimeout(() => {
-      toast('Use these sandbox test credentials:', { icon: '📝', duration: 8000 })
+      toast('⚠️ This will connect your REAL eBay account!', { icon: '💰', duration: 6000 })
     }, 2000)
     
     setTimeout(() => {
-      toast('Username: TESTUSER_username / Password: any_password', { icon: '🔑', duration: 8000 })
+      toast('Real money will be used for bids!', { icon: '💵', duration: 6000 })
     }, 4000)
   }
 
@@ -125,11 +128,19 @@ export default function SettingsContent() {
           </motion.button>
         </div>
         
-        <div className="mt-4 p-3 bg-blue-500/10 rounded-lg border border-blue-500/30">
-          <p className="text-sm text-blue-400">
-            ℹ️ This is a sandbox environment. Use eBay test accounts only.
-          </p>
-        </div>
+        {process.env.NEXT_PUBLIC_EBAY_ENVIRONMENT === 'production' ? (
+          <div className="mt-4 p-3 bg-red-500/10 rounded-lg border border-red-500/30">
+            <p className="text-sm text-red-400">
+              ⚠️ PRODUCTION MODE: Real money will be used for bids! Start with cheap items to test.
+            </p>
+          </div>
+        ) : (
+          <div className="mt-4 p-3 bg-blue-500/10 rounded-lg border border-blue-500/30">
+            <p className="text-sm text-blue-400">
+              🧪 SANDBOX MODE: Testing environment - no real money involved.
+            </p>
+          </div>
+        )}
       </motion.div>
 
       {/* Snipe Settings */}
@@ -268,8 +279,9 @@ export default function SettingsContent() {
             For production apps, you'd implement a server-side OAuth flow with proper redirect handling.
           </p>
           <div className="mt-2">
-            <p className="text-xs text-gray-400">RuName: Mohamed_Siedahm-MohamedS-pro-SB-qezdx</p>
-            <p className="text-xs text-gray-400">Client ID: MohamedS-pro-SBX-eeff103ae-9e4491e8</p>
+            <p className="text-xs text-gray-400">Environment: PRODUCTION</p>
+            <p className="text-xs text-gray-400">RuName: Need to get production RuName from eBay</p>
+            <p className="text-xs text-gray-400">⚠️ Real money mode - test with cheap items first!</p>
           </div>
         </motion.div>
       )}

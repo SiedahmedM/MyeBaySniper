@@ -5,7 +5,11 @@ export const ebayConfig = {
   clientId: process.env.EBAY_CLIENT_ID!,
   clientSecret: process.env.EBAY_CLIENT_SECRET!,
   redirectUri: process.env.EBAY_REDIRECT_URI!,
-  ruName: 'Mohamed_Siedahm-MohamedS-pro-SB-qezdx',
+  // IMPORTANT: Replace with your production RuName from eBay
+  // Get from: https://developer.ebay.com/my/auth/?env=production&index=0
+  ruName: process.env.NEXT_PUBLIC_EBAY_ENVIRONMENT === 'production' 
+    ? 'YOUR_PRODUCTION_RUNAME' // Replace this!
+    : 'Mohamed_Siedahm-MohamedS-pro-SB-qezdx',
   environment: process.env.NEXT_PUBLIC_EBAY_ENVIRONMENT || 'sandbox',
   
   // API endpoints

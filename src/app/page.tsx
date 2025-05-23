@@ -107,8 +107,8 @@ export default function Dashboard() {
               whileHover={{ scale: 1.05 }}
               className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
             >
-              <div className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" />
-              <span className="text-sm">Demo Mode</span>
+              <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+              <span className="text-sm">Sandbox Mode</span>
             </motion.div>
           </Link>
         </div>
