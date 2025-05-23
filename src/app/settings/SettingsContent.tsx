@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Link2, CheckCircle, AlertCircle, Clock, Bell } from 'lucide-react'
+import { Link2, CheckCircle, AlertCircle, Clock, Bell, ExternalLink } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import toast from 'react-hot-toast'
 
@@ -26,14 +26,18 @@ export default function SettingsContent() {
   }, [searchParams])
 
   const handleConnectEbay = () => {
-    // Check if environment variables are set
-    if (!process.env.NEXT_PUBLIC_EBAY_APP_ID) {
-      toast.error('eBay API not configured. Contact support.')
-      return
-    }
+    // Open eBay OAuth in new window
+    const oauthUrl = `https://auth.sandbox.ebay.com/oauth2/authorize?client_id=MohamedS-pro-SBX-eeff103ae-9e4491e8&response_type=code&redirect_uri=Mohamed_Siedahm-MohamedS-pro-SB-qezdx&scope=https://api.ebay.com/oauth/api_scope`
     
-    setIsLoading(true)
-    window.location.href = '/api/auth/ebay'
+    window.open(oauthUrl, '_blank', 'width=600,height=700')
+    
+    toast('Complete the login in the popup window', { icon: '🔐' })
+    
+    // Simulate connection after user completes OAuth
+    // In production, you'd check the auth status via API
+    setTimeout(() => {
+      toast('Check if you completed the eBay login, then refresh this page', { icon: '🔄', duration: 5000 })
+    }, 3000)
   }
 
   const handleDisconnect = () => {
@@ -103,23 +107,22 @@ export default function SettingsContent() {
             whileTap={{ scale: 0.95 }}
             onClick={isConnected ? handleDisconnect : handleConnectEbay}
             disabled={isLoading}
-            className={`px-6 py-3 rounded-full font-semibold transition-all ${
+            className={`px-6 py-3 rounded-full font-semibold transition-all flex items-center gap-2 ${
               isConnected 
                 ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30' 
                 : 'neon-button'
             }`}
           >
             {isLoading ? 'Connecting...' : isConnected ? 'Disconnect' : 'Connect to eBay'}
+            {!isConnected && <ExternalLink className="w-4 h-4" />}
           </motion.button>
         </div>
         
-        {!process.env.NEXT_PUBLIC_EBAY_APP_ID && (
-          <div className="mt-4 p-3 bg-yellow-500/10 rounded-lg border border-yellow-500/30">
-            <p className="text-sm text-yellow-400">
-              ⚠️ eBay integration is not configured. Running in demo mode only.
-            </p>
-          </div>
-        )}
+        <div className="mt-4 p-3 bg-blue-500/10 rounded-lg border border-blue-500/30">
+          <p className="text-sm text-blue-400">
+            ℹ️ This is a sandbox environment. Use eBay test accounts only.
+          </p>
+        </div>
       </motion.div>
 
       {/* Snipe Settings */}
@@ -249,24 +252,18 @@ export default function SettingsContent() {
           animate={{ opacity: 1, height: 'auto' }}
           className="mt-4 p-4 bg-black/50 rounded-lg border border-gray-800"
         >
-          <h3 className="text-sm font-semibold mb-2 text-gray-400">Developer Setup</h3>
+          <h3 className="text-sm font-semibold mb-2 text-gray-400">eBay OAuth Info</h3>
           <p className="text-xs text-gray-500 mb-2">
-            To enable eBay API integration, set these environment variables:
+            Due to eBay's OAuth limitations, the connection process opens in a new window.
+            After completing the eBay login, the auth token needs to be manually retrieved.
           </p>
-          <pre className="text-xs bg-black/50 p-2 rounded overflow-x-auto">
-{`NEXT_PUBLIC_EBAY_APP_ID=xxx
-EBAY_CLIENT_ID=xxx
-EBAY_CLIENT_SECRET=xxx
-EBAY_REDIRECT_URI=http://localhost:3000/api/auth/ebay/callback`}
-          </pre>
-          <a 
-            href="https://developer.ebay.com" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="text-xs text-neon-pink hover:underline mt-2 inline-block"
-          >
-            Get API credentials →
-          </a>
+          <p className="text-xs text-gray-500 mb-2">
+            For production apps, you'd implement a server-side OAuth flow with proper redirect handling.
+          </p>
+          <div className="mt-2">
+            <p className="text-xs text-gray-400">RuName: Mohamed_Siedahm-MohamedS-pro-SB-qezdx</p>
+            <p className="text-xs text-gray-400">Client ID: MohamedS-pro-SBX-eeff103ae-9e4491e8</p>
+          </div>
         </motion.div>
       )}
     </>
