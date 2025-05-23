@@ -24,17 +24,18 @@ export async function GET(request: NextRequest) {
       endpointURL
     })
     
-    // Create the hash as required by eBay
-    const hash = crypto
-      .createHash('sha256')
-      .update(challengeCode + verificationToken + endpointURL)
-      .digest('hex')
+    // Create the hash as required by eBay - must hash each part separately
+    const hash = crypto.createHash('sha256')
+    hash.update(challengeCode)
+    hash.update(verificationToken)
+    hash.update(endpointURL)
+    const responseHash = hash.digest('hex')
     
-    console.log('Generated hash:', hash)
+    console.log('Generated hash:', responseHash)
     
     // Return the challenge response
     return NextResponse.json({
-      challengeResponse: hash
+      challengeResponse: responseHash
     }, {
       status: 200,
       headers: {
@@ -69,13 +70,14 @@ export async function POST(request: NextRequest) {
           endpointURL
         })
         
-        const hash = crypto
-          .createHash('sha256')
-          .update(challengeCode + verificationToken + endpointURL)
-          .digest('hex')
+        const hash = crypto.createHash('sha256')
+        hash.update(challengeCode)
+        hash.update(verificationToken)
+        hash.update(endpointURL)
+        const responseHash = hash.digest('hex')
         
         return NextResponse.json({
-          challengeResponse: hash
+          challengeResponse: responseHash
         }, { status: 200 })
       }
     }
