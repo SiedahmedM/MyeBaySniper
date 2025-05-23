@@ -13,16 +13,24 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Missing challenge_code' }, { status: 400 })
     }
     
-    // You'll get this token from eBay when setting up the notification
-    // For now, we'll use a placeholder
-    const verificationToken = process.env.EBAY_NOTIFICATION_TOKEN || 'YOUR_VERIFICATION_TOKEN_HERE'
+    // Get the verification token - MUST match what you entered in eBay
+    const verificationToken = process.env.EBAY_NOTIFICATION_TOKEN || 'myebaysniper-prod-2025-verification'
     const endpointURL = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://myebaysniper.vercel.app'}/api/ebay/notifications`
+    
+    // Log for debugging (remove in production)
+    console.log('eBay Challenge Request:', {
+      challengeCode,
+      verificationToken: verificationToken.substring(0, 10) + '...',
+      endpointURL
+    })
     
     // Create the hash as required by eBay
     const hash = crypto
       .createHash('sha256')
       .update(challengeCode + verificationToken + endpointURL)
       .digest('hex')
+    
+    console.log('Generated hash:', hash)
     
     // Return the challenge response
     return NextResponse.json({
