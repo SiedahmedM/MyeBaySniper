@@ -26,18 +26,25 @@ export default function SettingsContent() {
   }, [searchParams])
 
   const handleConnectEbay = () => {
-    // Open eBay OAuth in new window
-    const oauthUrl = `https://auth.sandbox.ebay.com/oauth2/authorize?client_id=MohamedS-pro-SBX-eeff103ae-9e4491e8&response_type=code&redirect_uri=Mohamed_Siedahm-MohamedS-pro-SB-qezdx&scope=https://api.ebay.com/oauth/api_scope`
+    // Generate a session ID for this OAuth request
+    const sessionId = btoa(Date.now().toString()).replace(/=/g, '')
+    const runame = 'Mohamed_Siedahm-MohamedS-pro-SB-qezdx'
+    
+    // Use the eBay Sign-In flow with RuName
+    const oauthUrl = `https://signin.sandbox.ebay.com/ws/eBayISAPI.dll?SignIn&runame=${runame}&SessID=${sessionId}`
     
     window.open(oauthUrl, '_blank', 'width=600,height=700')
     
     toast('Complete the login in the popup window', { icon: '🔐' })
     
-    // Simulate connection after user completes OAuth
-    // In production, you'd check the auth status via API
+    // Show instructions
     setTimeout(() => {
-      toast('Check if you completed the eBay login, then refresh this page', { icon: '🔄', duration: 5000 })
-    }, 3000)
+      toast('Use these sandbox test credentials:', { icon: '📝', duration: 8000 })
+    }, 2000)
+    
+    setTimeout(() => {
+      toast('Username: TESTUSER_username / Password: any_password', { icon: '🔑', duration: 8000 })
+    }, 4000)
   }
 
   const handleDisconnect = () => {
