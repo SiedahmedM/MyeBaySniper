@@ -1,6 +1,6 @@
 # MyeBaySniper 🎯
 
-A modern eBay auction sniper built for Gen Z, featuring automated last-second bidding, real-time tracking, and a stunning neon-themed UI.
+A modern eBay auction sniper, featuring automated last-second bidding, real-time tracking, and a stunning neon-themed UI.
 
 ## Features
 
