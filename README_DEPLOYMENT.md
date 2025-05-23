@@ -5,11 +5,11 @@
 1. Go to https://vercel.com/new
 2. Import your GitHub repository (you'll need to push this code to GitHub first)
 3. Configure environment variables in Vercel dashboard:
-   - NEXT_PUBLIC_EBAY_APP_ID = MohamedS-pro-SBX-eeff103ae-9e4491e8
-   - EBAY_DEV_ID = db4bf729-4e01-4c8f-8ef8-6bba4c775ad4
-   - EBAY_CERT_ID = SBX-efff03aedbad-469c-4626-8587-c538
-   - EBAY_CLIENT_ID = MohamedS-pro-SBX-eeff103ae-9e4491e8
-   - EBAY_CLIENT_SECRET = SBX-f050fdfc1fe1-365b-4ec0-b0ae-3525
+   - NEXT_PUBLIC_EBAY_APP_ID = (your app id from eBay)
+   - EBAY_DEV_ID = (your dev id)
+   - EBAY_CERT_ID = (your cert id)
+   - EBAY_CLIENT_ID = (your client id)
+   - EBAY_CLIENT_SECRET = (your client secret)
    - EBAY_REDIRECT_URI = https://your-app-name.vercel.app/api/auth/ebay/callback
    - NEXT_PUBLIC_EBAY_API_URL = https://api.sandbox.ebay.com
    - NEXT_PUBLIC_EBAY_AUTH_URL = https://auth.sandbox.ebay.com/oauth2/authorize
