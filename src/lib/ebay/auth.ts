@@ -25,7 +25,7 @@ export class EbayAuth {
     const params = new URLSearchParams({
       grant_type: 'authorization_code',
       code,
-      redirect_uri: ebayConfig.redirectUri
+      redirect_uri: ebayConfig.ruName
     })
 
     const response = await fetch(ebayConfig.tokenUrl, {

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { EbayAuth } from '@/lib/ebay/auth'
+import { ebayConfig } from '@/lib/ebay/config'
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
@@ -14,14 +15,6 @@ export async function GET(request: NextRequest) {
     )
   }
   
-  // Verify state parameter
-  const storedState = request.cookies.get('ebay_auth_state')?.value
-  if (!state || state !== storedState) {
-    return NextResponse.redirect(
-      new URL('/settings?error=invalid_state', request.url)
-    )
-  }
-  
   if (!code) {
     return NextResponse.redirect(
       new URL('/settings?error=no_code', request.url)
@@ -32,13 +25,9 @@ export async function GET(request: NextRequest) {
     const auth = EbayAuth.getInstance()
     await auth.exchangeCodeForToken(code)
     
-    // Clear the state cookie
-    const response = NextResponse.redirect(
+    return NextResponse.redirect(
       new URL('/settings?success=true', request.url)
     )
-    response.cookies.delete('ebay_auth_state')
-    
-    return response
   } catch (error) {
     console.error('OAuth callback error:', error)
     return NextResponse.redirect(
