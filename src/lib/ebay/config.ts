@@ -31,7 +31,7 @@ export const ebayConfig = {
 export const getAuthUrl = (state: string) => {
   const params = new URLSearchParams({
     client_id: ebayConfig.clientId,
-    redirect_uri: ebayConfig.ruName,
+    redirect_uri: ebayConfig.redirectUri,
     response_type: 'code',
     state,
     scope: ebayConfig.scopes.join(' '),

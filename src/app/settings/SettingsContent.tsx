@@ -26,27 +26,10 @@ export default function SettingsContent() {
   }, [searchParams])
 
   const handleConnectEbay = () => {
-    // For production, you'll need the production RuName from eBay
-    const sessionId = btoa(Date.now().toString()).replace(/=/g, '')
+    toast('Redirecting to eBay...', { icon: '🔐' })
     
-    // Production RuName from eBay Developer Dashboard
-    const runame = 'Mohamed_Siedahm-MohamedS-pro-PR-anbaqhv'
-    
-    // Use the production eBay Sign-In flow
-    const oauthUrl = `https://signin.ebay.com/ws/eBayISAPI.dll?SignIn&runame=${runame}&SessID=${sessionId}`
-    
-    window.open(oauthUrl, '_blank', 'width=600,height=700')
-    
-    toast('Complete the login in the popup window', { icon: '🔐' })
-    
-    // Show warning for production
-    setTimeout(() => {
-      toast('⚠️ This will connect your REAL eBay account!', { icon: '💰', duration: 6000 })
-    }, 2000)
-    
-    setTimeout(() => {
-      toast('Real money will be used for bids!', { icon: '💵', duration: 6000 })
-    }, 4000)
+    // Redirect to eBay OAuth
+    window.location.href = '/api/auth/ebay'
   }
 
   const handleDisconnect = () => {
