@@ -107,8 +107,16 @@ export default function Dashboard() {
               whileHover={{ scale: 1.05 }}
               className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
             >
-              <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-              <span className="text-sm">Sandbox Mode</span>
+              <div className={`w-2 h-2 rounded-full animate-pulse ${
+                process.env.NEXT_PUBLIC_EBAY_ENVIRONMENT === 'production' 
+                  ? 'bg-red-400' 
+                  : 'bg-green-400'
+              }`} />
+              <span className="text-sm">
+                {process.env.NEXT_PUBLIC_EBAY_ENVIRONMENT === 'production' 
+                  ? 'Production Mode' 
+                  : 'Sandbox Mode'}
+              </span>
             </motion.div>
           </Link>
         </div>
