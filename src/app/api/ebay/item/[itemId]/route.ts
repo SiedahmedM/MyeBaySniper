@@ -9,6 +9,10 @@ export async function GET(
     const api = new EbayAPI()
     const item = await api.getItem(params.itemId)
     
+    // Log the raw eBay response for debugging
+    console.log('Raw eBay itemEndDate:', item.itemEndDate)
+    console.log('Parsed endTime:', new Date(item.itemEndDate))
+    
     // Transform eBay API response to our format
     const transformedItem = {
       itemId: item.itemId,

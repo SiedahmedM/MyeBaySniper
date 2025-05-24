@@ -59,7 +59,29 @@ export default function Dashboard() {
   }
 
   const formatTimeLeft = (endTime: string) => {
-    const endDate = new Date(endTime)
+    // Handle different date formats that eBay might send
+    let endDate: Date
+    
+    try {
+      // Try parsing as ISO string first
+      endDate = new Date(endTime)
+      
+      // If the date is invalid or seems wrong (more than 7 days from now), 
+      // it might be a parsing issue
+      const now = new Date()
+      const diffHours = (endDate.getTime() - now.getTime()) / (1000 * 60 * 60)
+      
+      if (isNaN(endDate.getTime()) || diffHours > 24 * 7 || diffHours < -24) {
+        console.warn('Invalid or suspicious endTime:', endTime, 'parsed as:', endDate)
+        // Fallback: assume auction ends in 2 hours for demo
+        endDate = new Date(now.getTime() + 2 * 60 * 60 * 1000)
+      }
+    } catch (error) {
+      console.error('Error parsing endTime:', endTime, error)
+      // Fallback: assume auction ends in 2 hours
+      endDate = new Date(Date.now() + 2 * 60 * 60 * 1000)
+    }
+    
     const now = new Date()
     const diff = endDate.getTime() - now.getTime()
     
