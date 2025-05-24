@@ -34,7 +34,16 @@ export default function Dashboard() {
   const handleCreateSnipe = async () => {
     if (ebayUrl && maxBid) {
       try {
-        const auctionData = await fetchAuctionData(ebayUrl)
+        let auctionData
+        
+        // Try to use real API first, fall back to mock data
+        try {
+          auctionData = await fetchRealAuctionData(ebayUrl)
+          console.log('Using real auction data for snipe:', auctionData)
+        } catch (apiError) {
+          console.log('Real API failed for snipe, using mock data:', apiError)
+          auctionData = await fetchAuctionData(ebayUrl)
+        }
         
         addSnipe({
           ebayUrl,
@@ -63,23 +72,33 @@ export default function Dashboard() {
     let endDate: Date
     
     try {
+      // Log the raw endTime for debugging
+      console.log('Raw endTime received:', endTime)
+      
       // Try parsing as ISO string first
       endDate = new Date(endTime)
+      console.log('Parsed endDate:', endDate.toString())
       
-      // If the date is invalid or seems wrong (more than 7 days from now), 
-      // it might be a parsing issue
+      // Check if the date is valid
+      if (isNaN(endDate.getTime())) {
+        console.error('Invalid date format:', endTime)
+        // Try parsing with different formats if needed
+        throw new Error('Invalid date')
+      }
+      
       const now = new Date()
-      const diffHours = (endDate.getTime() - now.getTime()) / (1000 * 60 * 60)
+      const diffMs = endDate.getTime() - now.getTime()
+      console.log('Time difference in ms:', diffMs)
+      console.log('Time difference in hours:', diffMs / (1000 * 60 * 60))
       
-      if (isNaN(endDate.getTime()) || diffHours > 24 * 7 || diffHours < -24) {
-        console.warn('Invalid or suspicious endTime:', endTime, 'parsed as:', endDate)
-        // Fallback: assume auction ends in 2 hours for demo
-        endDate = new Date(now.getTime() + 2 * 60 * 60 * 1000)
+      // Remove the fallback that was causing the 2-hour issue
+      if (diffMs < 0) {
+        console.warn('Auction already ended')
       }
     } catch (error) {
       console.error('Error parsing endTime:', endTime, error)
-      // Fallback: assume auction ends in 2 hours
-      endDate = new Date(Date.now() + 2 * 60 * 60 * 1000)
+      // Don't fallback to 2 hours - throw error instead
+      throw new Error(`Unable to parse auction end time: ${endTime}`)
     }
     
     const now = new Date()
